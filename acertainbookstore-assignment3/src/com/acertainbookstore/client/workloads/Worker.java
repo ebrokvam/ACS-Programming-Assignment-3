@@ -3,9 +3,15 @@
  */
 package com.acertainbookstore.client.workloads;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
+import com.acertainbookstore.business.BookCopy;
+import com.acertainbookstore.business.StockBook;
+import com.acertainbookstore.interfaces.StockManager;
 import com.acertainbookstore.utils.BookStoreException;
 
 /**
@@ -99,6 +105,15 @@ public class Worker implements Callable<WorkerRunResult> {
      */
     private void runRareStockManagerInteraction() throws BookStoreException {
 	// TODO: Add code for New Stock Acquisition Interaction
+		//TODO tjek if on the right path
+		int num = 4;
+		StockManager storeManager = null; //this is not the way to init them
+		BookSetGenerator bookSetGenerator = null; //ditto here
+
+		List<StockBook> listBooks = storeManager.getBooks();
+		Set<StockBook> randBook = bookSetGenerator.nextSetOfStockBooks(num);
+		storeManager.addBooks(randBook);
+
     }
 
     /**
@@ -108,8 +123,23 @@ public class Worker implements Callable<WorkerRunResult> {
      */
     private void runFrequentStockManagerInteraction() throws BookStoreException {
 	// TODO: Add code for Stock Replenishment Interaction
-    }
+		int k = 6;
+		StockManager storeManager = null; //this is not the way to init them
+		List<StockBook> listBooks = (List<StockBook>) storeManager.getBooks().
+				                    stream().sorted(Comparator.comparingDouble(StockBook::getNumCopies).reversed());
+		listBooks.subList(0,k);
+		storeManager.addCopies();
 
+
+
+    }
+/*
+		List<Book> topRatedBooks = allRatedIndices.stream()
+				.map(index -> allRatedBooks.get(index))
+				.sorted(Comparator.comparingDouble(BookStoreBook::getAverageRating).reversed())
+				.map(book -> book.immutableBook())
+				.collect(Collectors.toList());
+ */
     /**
      * Runs the customer interaction
      * 
