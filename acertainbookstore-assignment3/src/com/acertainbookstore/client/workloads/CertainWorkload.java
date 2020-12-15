@@ -3,13 +3,12 @@
  */
 package com.acertainbookstore.client.workloads;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import com.acertainbookstore.business.CertainBookStore;
+import com.acertainbookstore.business.*;
 import com.acertainbookstore.client.BookStoreHTTPProxy;
 import com.acertainbookstore.client.StockManagerHTTPProxy;
 import com.acertainbookstore.interfaces.BookStore;
@@ -102,6 +101,28 @@ public class CertainWorkload {
 	 */
 	public static void initializeBookStoreData(BookStore bookStore,
 			StockManager stockManager) throws BookStoreException {
+
+		//TODO tjek if this is the way forward
+		Set<StockBook> booksToAdd_0 = new HashSet<StockBook>();
+		Set<StockBook> booksToAdd_1 = new HashSet<StockBook>();
+		Set<StockBook> booksToAdd_2 = new HashSet<StockBook>();
+
+		booksToAdd_0 = Collections.singleton(new ImmutableStockBook(123456,
+				"Harry Potter and JUnit", "JK Unit",
+				(float) 7, 10, 0,
+				0, 0, false));
+		booksToAdd_1 = Collections.singleton(new ImmutableStockBook(654321,
+				"The Adventures of JUnit", "Hope Unit",
+				(float) 1, 300, 0,
+				0, 0, false));
+		booksToAdd_2 = Collections.singleton(new ImmutableStockBook(491283,
+				"A Guide On How to Use Face Mask", "Pringles",
+				(float) 10, 100, 0,
+				0, 0, true));
+
+		stockManager.addCopies((Set<BookCopy>)booksToAdd_0.stream());
+		stockManager.addCopies((Set<BookCopy>)booksToAdd_1.stream());
+		stockManager.addCopies((Set<BookCopy>)booksToAdd_2.stream());
 
 		// TODO: You should initialize data for your bookstore here
 
