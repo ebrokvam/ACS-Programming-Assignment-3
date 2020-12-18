@@ -1,8 +1,8 @@
-/**
- * 
- */
+
 package com.acertainbookstore.client.workloads;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -89,13 +89,15 @@ public class CertainWorkload {
 	 * 
 	 * @param workerRunResults
 	 */
-	public static void reportMetric(List<WorkerRunResult> workerRunResults) {
+	public static void reportMetric(List<WorkerRunResult> workerRunResults) throws FileNotFoundException {
 		// TODO: You should aggregate metrics and output them for plotting here
 
 		// Calculate throughput and latency
 		Boolean issueFound = false;
 		float throughput = 0;
 		float latency = 0;
+		PrintWriter throOut = new PrintWriter("../../../../../throFile.txt");
+		PrintWriter lanOut = new PrintWriter("../../../../../lanFile.txt");
 
 		for (WorkerRunResult result: workerRunResults) {
 			// Check less than 1% interactions are unsuccessful and customer interactions roughly 60% of all interactions
@@ -106,6 +108,10 @@ public class CertainWorkload {
 			}
 			throughput += result.getSuccessfulFrequentBookStoreInteractionRuns() / result.getElapsedTimeInNanoSecs(); // TODO: I assume this is customer interactions?
 			latency += result.getElapsedTimeInNanoSecs();
+			throOut.println(throughput);
+			lanOut.println(latency);
+			throOut.close();
+			lanOut.close();
 		}
 
 		if (issueFound) {
@@ -113,8 +119,8 @@ public class CertainWorkload {
 		}
 		else {
 			latency /= workerRunResults.size();
-
-			// Do plot
+			lanOut.println(latency);
+			lanOut.close();
 		}
 
 	}
