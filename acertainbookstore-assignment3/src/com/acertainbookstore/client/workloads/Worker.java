@@ -9,8 +9,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import com.acertainbookstore.business.Book;
 import com.acertainbookstore.business.BookCopy;
 import com.acertainbookstore.business.StockBook;
+import com.acertainbookstore.interfaces.BookStore;
 import com.acertainbookstore.interfaces.StockManager;
 import com.acertainbookstore.utils.BookStoreException;
 
@@ -139,6 +141,15 @@ public class Worker implements Callable<WorkerRunResult> {
      */
     private void runFrequentBookStoreInteraction() throws BookStoreException {
 	// TODO: Add code for Customer Interaction
+		// TODO figure out how to add set-isbns
+		int num = 10;
+		BookStore bookStore = null;
+		BookSetGenerator bookSetGenerator = null;
+
+
+		Set<BookCopy> bookCopy = bookStore.getEditorPicks(bookSetGenerator.sampleFromSetOfISBNs(isbn, num));
+		bookStore.buyBooks(bookCopy);
     }
 
 }
+
