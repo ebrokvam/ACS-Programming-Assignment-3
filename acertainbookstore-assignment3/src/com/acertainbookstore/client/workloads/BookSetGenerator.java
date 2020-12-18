@@ -30,7 +30,7 @@ public class BookSetGenerator {
 	 */
 	public Set<Integer> sampleFromSetOfISBNs(Set<Integer> isbns, int num) {
 		if (num == 0 || isbns.size() == 0 || num > isbns.size()) {
-			return null; // TODO: is this the correct way to handle this?
+			return null;
 		}
 
 		Random rand = new Random();
@@ -62,7 +62,7 @@ public class BookSetGenerator {
 	 */
 	public Set<StockBook> nextSetOfStockBooks(int num) {
 		if (num == 0) {
-			return null; // TODO: is this the correct way to handle this?
+			return null;
 		}
 		Random rand = new Random();
 		Set<ImmutableStockBook> genBooks = new HashSet<>();
