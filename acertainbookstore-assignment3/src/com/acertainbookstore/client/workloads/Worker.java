@@ -105,7 +105,6 @@ public class Worker implements Callable<WorkerRunResult> {
      * @throws BookStoreException
      */
     private void runRareStockManagerInteraction() throws BookStoreException {
-    // TODO: Add code for New Stock Acquisition Interaction
 		List<StockBook> listBooks = configuration.getStockManager().getBooks();
 		Set<StockBook> randBooks = configuration.getBookSetGenerator().nextSetOfStockBooks(configuration.getNumBooksToAdd());
 
@@ -128,8 +127,6 @@ public class Worker implements Callable<WorkerRunResult> {
      * @throws BookStoreException
      */
     private void runFrequentStockManagerInteraction() throws BookStoreException {
-	// TODO: Add code for Stock Replenishment Interaction
-	//TODO is this in the correct path
 		List<StockBook> listBooks = configuration.getStockManager().getBooks();
 
 		// Get books with smallest quantities
@@ -153,9 +150,6 @@ public class Worker implements Callable<WorkerRunResult> {
      * @throws BookStoreException
      */
     private void runFrequentBookStoreInteraction() throws BookStoreException {
-	// TODO: Add code for Customer Interaction
-	// TODO figure out how to add set-isbns
-
 		// Get set of all editor pick ISBNs
 		Set<Integer> editorPickIsbns = configuration.getBookStore()
 													.getEditorPicks(configuration.getNumEditorPicksToGet())
