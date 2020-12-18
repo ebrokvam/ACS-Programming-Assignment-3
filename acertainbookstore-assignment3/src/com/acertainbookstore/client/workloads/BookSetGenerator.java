@@ -28,16 +28,29 @@ public class BookSetGenerator {
 	 * @return
 	 */
 	public Set<Integer> sampleFromSetOfISBNs(Set<Integer> isbns, int num) {
-		if (num == 0 || isbns.size() == 0) {
-			return null;
+		if (num == 0 || isbns.size() == 0 || num > isbns.size()) {
+			return null; // TODO: is this the correct way to handle this?
 		}
+
 		Random rand = new Random();
-		Set<Integer> uniqueISBN = new HashSet<>();
-		while (isbns.size() < num) {
-			uniqueISBN.add(rand.nextInt(isbns.size()));
+		int randIndex;
+		Set<Integer> returnISBNs = new HashSet<>();
+
+		while (num > 0) {
+			randIndex = rand.nextInt(isbns.size());
+			int index = 0;
+
+			for (Integer isbn : isbns) {
+				if (index == randIndex) {
+					returnISBNs.add(isbn);
+					isbns.remove(isbn);
+					num--;
+					break;
+				}
+				index++;
+			}
 		}
-		//TODO this is just returning a set of random int
-		return uniqueISBN;
+		return returnISBNs;
 	}
 
 	/**
@@ -48,7 +61,7 @@ public class BookSetGenerator {
 	 */
 	public Set<StockBook> nextSetOfStockBooks(int num) {
 		if (num == 0) {
-			return null;
+			return null; // TODO: is this the correct way to handle this?
 		}
 		Random rand = new Random();
 		Set<Integer> genBook = new HashSet<>();
