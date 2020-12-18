@@ -106,21 +106,20 @@ public class Worker implements Callable<WorkerRunResult> {
      */
     private void runRareStockManagerInteraction() throws BookStoreException {
     // TODO: Add code for New Stock Acquisition Interaction
-	// TODO tjek if on the right path
-		int num = 4;
-		StockManager storeManager = null;
-		BookSetGenerator bookSetGenerator = new BookSetGenerator();
+		List<StockBook> listBooks = configuration.getStockManager().getBooks();
+		Set<StockBook> randBooks = configuration.getBookSetGenerator().nextSetOfStockBooks(configuration.getNumBooksToAdd());
 
-		assert storeManager != null;
-		Set<StockBook> randBooks = bookSetGenerator.nextSetOfStockBooks(num);
-		List<StockBook> listBooks = storeManager.getBooks();
-		while (randBooks.size() != 0) {
-			Stream<Integer> isbnOld = listBooks.stream().map(Book::getISBN);
-			Stream<Integer> isbnNew = randBooks.stream().map(Book::getISBN);
-			if (isbnOld != isbnNew){
-				storeManager.addBooks(randBooks);
-			}
-		}
+		// From assignment text: "It then checks if the set of ISBNs is in the list of books fetched" -> therefore convert to set of isbns
+		Set<Integer> randIsbns = listBooks.stream()
+										.map(Book::getISBN)
+										.collect(Collectors.toSet());
+
+		// Create Set<StockBook> with books that do not exist in store
+		Set<StockBook> nonExistingBooks = listBooks.stream()
+												.filter(b -> randIsbns.contains(b.getISBN()))
+												.collect(Collectors.toSet());
+
+		configuration.getStockManager().addBooks(nonExistingBooks);
     }
 
     /**
@@ -131,12 +130,21 @@ public class Worker implements Callable<WorkerRunResult> {
     private void runFrequentStockManagerInteraction() throws BookStoreException {
 	// TODO: Add code for Stock Replenishment Interaction
 	//TODO is this in the correct path
-		int k = 6;
-		StockManager storeManager = null;
-		List<StockBook> listBooks = (List<StockBook>) storeManager.getBooks().
-				                    stream().sorted(Comparator.comparingDouble(StockBook::getNumCopies).reversed());
-		assert storeManager != null;
-		storeManager.addBooks((Set<StockBook>) listBooks.subList(0,k));
+		List<StockBook> listBooks = configuration.getStockManager().getBooks();
+
+		// Get books with smallest quantities
+		listBooks = listBooks.stream()
+							.sorted(Comparator.comparingDouble(StockBook::getNumCopies))
+							.collect(Collectors.toList())
+							.subList(0, configuration.getNumBooksWithLeastCopies());
+
+		// Create Set<BookCopy> for adding copies
+		Set<BookCopy> bookCopies = new HashSet<>();
+		for (StockBook book: listBooks) {
+			bookCopies.add(new BookCopy(book.getISBN(), configuration.getNumAddCopies()));
+		}
+
+		configuration.getStockManager().addCopies(bookCopies);
     }
 
     /**
@@ -147,15 +155,23 @@ public class Worker implements Callable<WorkerRunResult> {
     private void runFrequentBookStoreInteraction() throws BookStoreException {
 	// TODO: Add code for Customer Interaction
 	// TODO figure out how to add set-isbns
-		int num = 10;
-		BookStore bookStore = null;
-		BookSetGenerator bookSetGenerator = new BookSetGenerator();
-		Set<Integer> isbn = new HashSet<>(); // TODO this is only a temp sol until i fig out the sol
-		Set<Integer> isbns = bookSetGenerator.sampleFromSetOfISBNs(isbn, num);
 
-		assert bookStore != null;
-		Set<Book> books = bookStore.getEditorPicks(isbns.stream().collect(Collectors.toList()).subList(0, 2).size()).stream().collect(Collectors.toSet());
-    //TODO add buyBooks(Set<BookCopy>);
+		// Get set of all editor pick ISBNs
+		Set<Integer> editorPickIsbns = configuration.getBookStore()
+													.getEditorPicks(configuration.getNumEditorPicksToGet())
+													.stream()
+													.map(Book::getISBN)
+													.collect(Collectors.toSet());
+
+		Set<Integer> sampleEditorPicks = configuration.getBookSetGenerator().sampleFromSetOfISBNs(editorPickIsbns, configuration.getNumBooksToBuy());
+
+		// Create Set<BookCopy> for buying
+		Set<BookCopy> bookCopies = new HashSet<>();
+		for (Integer editorPickIsbn: sampleEditorPicks) {
+			bookCopies.add(new BookCopy(editorPickIsbn, configuration.getNumBookCopiesToBuy()));
+		}
+
+		configuration.getBookStore().buyBooks(bookCopies);
     }
 
 }
