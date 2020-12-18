@@ -29,7 +29,7 @@ public class CertainWorkload {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		int numConcurrentWorkloadThreads = 90;
+		int numConcurrentWorkloadThreads = 10;
 		String serverAddress = "http://localhost:8081";
 		boolean localTest = false;
 		List<WorkerRunResult> workerRunResults = new ArrayList<WorkerRunResult>();
