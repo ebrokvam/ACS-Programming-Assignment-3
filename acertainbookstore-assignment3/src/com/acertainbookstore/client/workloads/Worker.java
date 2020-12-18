@@ -131,12 +131,19 @@ public class Worker implements Callable<WorkerRunResult> {
 	//TODO is this in the correct path
 		List<StockBook> listBooks = configuration.getStockManager().getBooks();
 
-//		int k = 6;
-//		StockManager storeManager = null;
-//		List<StockBook> listBooks = (List<StockBook>) storeManager.getBooks().
-//				                    stream().sorted(Comparator.comparingDouble(StockBook::getNumCopies).reversed());
-//		assert storeManager != null;
-//		storeManager.addBooks((Set<StockBook>) listBooks.subList(0,k));
+		// Get smallest quantities
+		listBooks = listBooks.stream()
+							.sorted(Comparator.comparingDouble(StockBook::getNumCopies))
+							.collect(Collectors.toList())
+							.subList(0, configuration.getNumBooksWithLeastCopies());
+
+		// Convert to Set<BookCopy>
+		Set<BookCopy> bookCopies = new HashSet<>();
+		for (StockBook book: listBooks) {
+			bookCopies.add(new BookCopy(book.getISBN(), configuration.getNumAddCopies()));
+		}
+
+		configuration.getStockManager().addCopies(bookCopies);
     }
 
     /**
