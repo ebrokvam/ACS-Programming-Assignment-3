@@ -96,7 +96,8 @@ public class CertainWorkload {
 		double latency = 0;
 		try {
 			String locality = localTest ? "local" : "rpc";
-			FileWriter resultOut = new FileWriter(locality+"_"+workerRunResults.size()+"_clients.txt");
+			FileWriter throOut = new FileWriter("throughput_"+locality+"_"+workerRunResults.size()+"_clients.txt");
+			FileWriter latOut = new FileWriter("latency_"+locality+"_"+workerRunResults.size()+"_clients.txt");
 
 			for (WorkerRunResult result : workerRunResults) {
 				// Check less than 1% interactions are unsuccessful and customer interactions roughly 60% of all interactions
@@ -113,11 +114,13 @@ public class CertainWorkload {
 
 			if (!issueFound) {
 				latency /= workerRunResults.size();
-				resultOut.write("Throughput: "+String.valueOf(throughput)+"\r\nLatency: "+String.valueOf(latency));
+				throOut.write(String.valueOf(throughput)+"\r\n");
+				latOut.write(String.valueOf(latency)+"\r\n");
 				System.out.println("Throughput: " + throughput);
 				System.out.println("Latency: " + latency);
 			}
-			resultOut.close();
+			throOut.close();
+			latOut.close();
 		} catch (IOException e) {
 			System.out.println("An error occurred with writing to txt.");
 			e.printStackTrace();
