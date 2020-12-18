@@ -131,7 +131,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	//TODO is this in the correct path
 		List<StockBook> listBooks = configuration.getStockManager().getBooks();
 
-		// Sort by quantities
+		// Get smallest quantities
 		listBooks = listBooks.stream()
 							.sorted(Comparator.comparingDouble(StockBook::getNumCopies))
 							.collect(Collectors.toList())
