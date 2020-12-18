@@ -29,10 +29,6 @@ public class BookSetGenerator {
 	 * @return
 	 */
 	public Set<Integer> sampleFromSetOfISBNs(Set<Integer> isbns, int num) {
-		if (num == 0 || isbns.size() == 0 || num > isbns.size()) {
-			return null;
-		}
-
 		Random rand = new Random();
 		int randIndex;
 		Set<Integer> returnISBNs = new HashSet<>();
@@ -61,9 +57,6 @@ public class BookSetGenerator {
 	 * @return
 	 */
 	public Set<StockBook> nextSetOfStockBooks(int num) {
-		if (num == 0) {
-			return null;
-		}
 		Random rand = new Random();
 		Set<ImmutableStockBook> genBooks = new HashSet<>();
 		for (int i = 0; i < num; i++){
