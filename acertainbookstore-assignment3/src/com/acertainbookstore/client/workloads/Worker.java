@@ -157,6 +157,7 @@ public class Worker implements Callable<WorkerRunResult> {
 													.map(Book::getISBN)
 													.collect(Collectors.toSet());
 
+		// Get sample of editor picks
 		Set<Integer> sampleEditorPicks = configuration.getBookSetGenerator().sampleFromSetOfISBNs(editorPickIsbns, configuration.getNumBooksToBuy());
 
 		// Create Set<BookCopy> for buying
