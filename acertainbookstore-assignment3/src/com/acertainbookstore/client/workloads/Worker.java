@@ -106,21 +106,19 @@ public class Worker implements Callable<WorkerRunResult> {
      */
     private void runRareStockManagerInteraction() throws BookStoreException {
     // TODO: Add code for New Stock Acquisition Interaction
-	// TODO tjek if on the right path
-		int num = 4;
-		StockManager storeManager = null;
+		List<StockBook> listBooks = configuration.getStockManager().getBooks();
 		BookSetGenerator bookSetGenerator = new BookSetGenerator();
+		Set<StockBook> randBooks = bookSetGenerator.nextSetOfStockBooks(configuration.getNumBooksToAdd());
 
-		assert storeManager != null;
-		Set<StockBook> randBooks = bookSetGenerator.nextSetOfStockBooks(num);
-		List<StockBook> listBooks = storeManager.getBooks();
-		while (randBooks.size() != 0) {
-			Stream<Integer> isbnOld = listBooks.stream().map(Book::getISBN);
-			Stream<Integer> isbnNew = randBooks.stream().map(Book::getISBN);
-			if (isbnOld != isbnNew){
-				storeManager.addBooks(randBooks);
+		Set<StockBook> nonExistingBooks = new HashSet<>();
+		for (StockBook book : randBooks) {
+			// From assignment text: "It then checks if the set of ISBNs is in the list of books fetched"
+			if (!listBooks.stream().anyMatch(b -> b.getISBN() == book.getISBN())) { //
+				nonExistingBooks.add(book);
 			}
 		}
+
+		configuration.getStockManager().addBooks(nonExistingBooks);
     }
 
     /**
@@ -131,12 +129,14 @@ public class Worker implements Callable<WorkerRunResult> {
     private void runFrequentStockManagerInteraction() throws BookStoreException {
 	// TODO: Add code for Stock Replenishment Interaction
 	//TODO is this in the correct path
-		int k = 6;
-		StockManager storeManager = null;
-		List<StockBook> listBooks = (List<StockBook>) storeManager.getBooks().
-				                    stream().sorted(Comparator.comparingDouble(StockBook::getNumCopies).reversed());
-		assert storeManager != null;
-		storeManager.addBooks((Set<StockBook>) listBooks.subList(0,k));
+		List<StockBook> listBooks = configuration.getStockManager().getBooks();
+
+//		int k = 6;
+//		StockManager storeManager = null;
+//		List<StockBook> listBooks = (List<StockBook>) storeManager.getBooks().
+//				                    stream().sorted(Comparator.comparingDouble(StockBook::getNumCopies).reversed());
+//		assert storeManager != null;
+//		storeManager.addBooks((Set<StockBook>) listBooks.subList(0,k));
     }
 
     /**
