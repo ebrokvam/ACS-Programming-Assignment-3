@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.acertainbookstore.business.Book;
 import com.acertainbookstore.business.BookStoreBook;
+import com.acertainbookstore.business.ImmutableStockBook;
 import com.acertainbookstore.business.StockBook;
 import com.acertainbookstore.utils.BookStoreConstants;
 import com.acertainbookstore.utils.BookStoreException;
@@ -64,12 +65,15 @@ public class BookSetGenerator {
 			return null; // TODO: is this the correct way to handle this?
 		}
 		Random rand = new Random();
-		Set<Integer> genBook = new HashSet<>();
+		Set<ImmutableStockBook> genBooks = new HashSet<>();
 		for (int i = 0; i < num; i++){
-			genBook.add(rand.nextInt(i));
+			// TODO: we assume only the isbn needs to be random
+			genBooks.add(new ImmutableStockBook(rand.nextInt(100000), // TODO: how big should the random isbn be?
+					"The Adventures of JUnit", "Hope Unit",
+					(float) 1, 300, 0,
+					0, 0, false));
 		}
-		// TODO :: this is just returning a set of size num of random int
-		return (Set<StockBook>) genBook.stream();
+		return (Set<StockBook>) genBooks.stream();
 	}
 }
 
