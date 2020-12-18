@@ -106,6 +106,7 @@ public class Worker implements Callable<WorkerRunResult> {
     private void runRareStockManagerInteraction() throws BookStoreException {
 	// TODO: Add code for New Stock Acquisition Interaction
 		//TODO tjek if on the right path
+		// this doesn't do anything atm
 		int num = 4;
 		StockManager storeManager = null; //this is not the way to init them
 		BookSetGenerator bookSetGenerator = null; //ditto here
@@ -123,23 +124,14 @@ public class Worker implements Callable<WorkerRunResult> {
      */
     private void runFrequentStockManagerInteraction() throws BookStoreException {
 	// TODO: Add code for Stock Replenishment Interaction
+		//TODO is this in the correct path
 		int k = 6;
 		StockManager storeManager = null; //this is not the way to init them
 		List<StockBook> listBooks = (List<StockBook>) storeManager.getBooks().
 				                    stream().sorted(Comparator.comparingDouble(StockBook::getNumCopies).reversed());
-		listBooks.subList(0,k);
-		storeManager.addCopies();
-
-
-
+		storeManager.addBooks((Set<StockBook>) listBooks.subList(0,k));
     }
-/*
-		List<Book> topRatedBooks = allRatedIndices.stream()
-				.map(index -> allRatedBooks.get(index))
-				.sorted(Comparator.comparingDouble(BookStoreBook::getAverageRating).reversed())
-				.map(book -> book.immutableBook())
-				.collect(Collectors.toList());
- */
+
     /**
      * Runs the customer interaction
      * 
