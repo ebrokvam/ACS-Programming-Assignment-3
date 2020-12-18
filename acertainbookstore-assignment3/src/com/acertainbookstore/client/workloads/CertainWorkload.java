@@ -80,7 +80,8 @@ public class CertainWorkload {
 			((StockManagerHTTPProxy) stockManager).stop();
 		}
 
-		reportMetric(workerRunResults);
+		// Sending localTest as parameter just for text file naming
+		reportMetric(workerRunResults, localTest);
 	}
 
 	/**
@@ -88,42 +89,42 @@ public class CertainWorkload {
 	 * 
 	 * @param workerRunResults
 	 */
-	public static void reportMetric(List<WorkerRunResult> workerRunResults) throws FileNotFoundException {
+	public static void reportMetric(List<WorkerRunResult> workerRunResults, Boolean localTest) throws FileNotFoundException {
 		// TODO: You should aggregate metrics and output them for plotting here
 
 		// Calculate throughput and latency
 		Boolean issueFound = false;
-		float throughput = 0;
-		float latency = 0;
+		double throughput = 0;
+		double latency = 0;
 		try {
-			FileWriter throOut = new FileWriter("throughput.txt");
-			FileWriter latOut = new FileWriter("latency.txt");
-				for (WorkerRunResult result : workerRunResults) {
-					// Check less than 1% interactions are unsuccessful and customer interactions roughly 60% of all interactions
-					if (result.getTotalRuns() * 0.99 < result.getSuccessfulInteractions() &&
-							result.getSuccessfulInteractions() * 0.55 < result.getSuccessfulFrequentBookStoreInteractionRuns() &&
-							result.getSuccessfulInteractions() * 0.65 > result.getSuccessfulFrequentBookStoreInteractionRuns()) {
-						issueFound = true;
-					}
-					throughput += result.getSuccessfulFrequentBookStoreInteractionRuns() / result.getElapsedTimeInNanoSecs(); // TODO: I assume this is customer interactions?
-					latency += result.getElapsedTimeInNanoSecs();
-					throOut.write(String.valueOf(throughput)+"\r\n");
-					latOut.write(String.valueOf(latency)+"\r\n");
-					//System.out.println(String.valueOf(throughput)+"\r\n");
-					//System.out.println(String.valueOf(latency)+"\r\n");
+			String locality = localTest ? "local" : "rpc";
+			FileWriter resultOut = new FileWriter(locality+"_"+workerRunResults.size()+"_clients.txt");
 
+			for (WorkerRunResult result : workerRunResults) {
+				// Check less than 1% interactions are unsuccessful and customer interactions roughly 60% of all interactions
+				if (result.getTotalRuns() * 0.99 > result.getSuccessfulInteractions() &&
+						result.getSuccessfulInteractions() * 0.55 < result.getSuccessfulFrequentBookStoreInteractionRuns() &&
+						result.getSuccessfulInteractions() * 0.65 > result.getSuccessfulFrequentBookStoreInteractionRuns()) {
+					System.out.println("Issue in implementation");
+					System.out.println("getTotalRuns() = " + result.getTotalRuns());
+					System.out.println("getSuccessfulInteractions() = " + result.getSuccessfulInteractions());
+					System.out.println("getSuccessfulFrequentBookStoreInteractionRuns() = " + result.getSuccessfulFrequentBookStoreInteractionRuns());
+					issueFound = true;
+					break;
 				}
-			if (issueFound) {
-				// TODO: What to do here?
-			} else {
-				latency /= workerRunResults.size();
-				latOut.write(String.valueOf(latency)+"\r\n");
+				throughput += (double)result.getSuccessfulFrequentBookStoreInteractionRuns() / result.getElapsedTimeInNanoSecs();
+				latency += result.getElapsedTimeInNanoSecs();
 			}
-			throOut.close();
-			latOut.close();
-			System.out.println("Successfully wrote to the files.");
+
+			if (!issueFound) {
+				latency /= workerRunResults.size();
+				resultOut.write("Throughput: "+String.valueOf(throughput)+"\r\nLatency: "+String.valueOf(latency));
+				System.out.println("Throughput: " + throughput);
+				System.out.println("Latency: " + latency);
+			}
+			resultOut.close();
 		} catch (IOException e) {
-			System.out.println("An error occurred.");
+			System.out.println("An error occurred with writing to txt.");
 			e.printStackTrace();
 		}
 	}
@@ -186,6 +187,15 @@ public class CertainWorkload {
 				"We Decide What's Red", "MacAfee",
 				(float) 10, 10, 10,
 				10, 10, false));
+
+//		Random rand = new Random();
+//
+//		for (int i = 0; i < 20; i++) {
+//			initBooks.add(new ImmutableStockBook(123456,
+//					"Title"+i, "Author"+1,
+//					(float) 7, rand.nextInt(50), 0,
+//					0, 0, (Boolean) rand.nextBoolean()));
+//		}
 
 		stockManager.addBooks(initBooks);
 
