@@ -91,6 +91,32 @@ public class CertainWorkload {
 	 */
 	public static void reportMetric(List<WorkerRunResult> workerRunResults) {
 		// TODO: You should aggregate metrics and output them for plotting here
+
+		// Calculate throughput and latency
+		Boolean issueFound = false;
+		float throughput = 0;
+		float latency = 0;
+
+		for (WorkerRunResult result: workerRunResults) {
+			// Check less than 1% interactions are unsuccessful and customer interactions roughly 60% of all interactions
+			if (result.getTotalRuns() * 0.99 < result.getSuccessfulInteractions() &&
+				result.getSuccessfulInteractions() * 0.55 < result.getSuccessfulFrequentBookStoreInteractionRuns() &&
+				result.getSuccessfulInteractions() * 0.65 > result.getSuccessfulFrequentBookStoreInteractionRuns()) {
+					issueFound = true;
+			}
+			throughput += result.getSuccessfulFrequentBookStoreInteractionRuns() / result.getElapsedTimeInNanoSecs(); // TODO: I assume this is customer interactions?
+			latency += result.getElapsedTimeInNanoSecs();
+		}
+
+		if (issueFound) {
+			// TODO: What to do here?
+		}
+		else {
+			latency /= workerRunResults.size();
+
+			// Do plot
+		}
+
 	}
 
 	/**
