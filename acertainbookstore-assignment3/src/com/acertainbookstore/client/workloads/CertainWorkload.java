@@ -90,8 +90,6 @@ public class CertainWorkload {
 	 * @param workerRunResults
 	 */
 	public static void reportMetric(List<WorkerRunResult> workerRunResults, Boolean localTest) throws FileNotFoundException {
-		// TODO: You should aggregate metrics and output them for plotting here
-
 		// Calculate throughput and latency
 		Boolean issueFound = false;
 		double throughput = 0;
@@ -106,9 +104,6 @@ public class CertainWorkload {
 						result.getSuccessfulInteractions() * 0.55 < result.getSuccessfulFrequentBookStoreInteractionRuns() &&
 						result.getSuccessfulInteractions() * 0.65 > result.getSuccessfulFrequentBookStoreInteractionRuns()) {
 					System.out.println("Issue in implementation");
-					System.out.println("getTotalRuns() = " + result.getTotalRuns());
-					System.out.println("getSuccessfulInteractions() = " + result.getSuccessfulInteractions());
-					System.out.println("getSuccessfulFrequentBookStoreInteractionRuns() = " + result.getSuccessfulFrequentBookStoreInteractionRuns());
 					issueFound = true;
 					break;
 				}

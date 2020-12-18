@@ -67,8 +67,9 @@ public class BookSetGenerator {
 		Random rand = new Random();
 		Set<ImmutableStockBook> genBooks = new HashSet<>();
 		for (int i = 0; i < num; i++){
-			// TODO: we assume only the isbn needs to be random
-			genBooks.add(new ImmutableStockBook(rand.nextInt(100000), // TODO: how big should the random isbn be?
+			// Random 6 digit isbn
+			Integer randomIsbn = (int)Math.random() * (999999 - 100000 + 1) + 100000;
+			genBooks.add(new ImmutableStockBook(rand.nextInt(randomIsbn),
 					"The Adventures of JUnit", "Hope Unit",
 					(float) 1, 300, 0,
 					0, 0, false));
