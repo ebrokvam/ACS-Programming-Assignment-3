@@ -141,12 +141,48 @@ public class CertainWorkload {
 				0, 0, false));
         initBooks.add(new ImmutableStockBook(654321,
 				"The Adventures of JUnit", "Hope Unit",
-				(float) 1, 300, 0,
+				(float) 1, 300, 5,
 				0, 0, false));
         initBooks.add(new ImmutableStockBook(491283,
 				"A Guide On How to Use Face Mask", "Pringles",
-				(float) 10, 100, 0,
+				(float) 10, 100, 1,
 				0, 0, true));
+		initBooks.add(new ImmutableStockBook(123457,
+				"The Silver Bottle", "Miss. Princess",
+				(float) 7, 10, 3,
+				8, 3, false));
+		initBooks.add(new ImmutableStockBook(123458,
+				"The Bet of Your Life", "Mr. Green",
+				(float) 1, 79, 0,
+				34, 3, false));
+		initBooks.add(new ImmutableStockBook(123459,
+				"A Very Ugly Swam", "HCA",
+				(float) 10, 100, 4,
+				29, 10, true));
+		initBooks.add(new ImmutableStockBook(123410,
+				"U-Boats", "Peter Madsen",
+				(float) 7, 10, 0,
+				2, 1, false));
+		initBooks.add(new ImmutableStockBook(123411,
+				"How to not fail", "Mr. Brown",
+				(float) 1, 198, 0,
+				60, 10, true));
+		initBooks.add(new ImmutableStockBook(123412,
+				"A Certain BookStore", "ACS",
+				(float) 10, 50, 0,
+				3, 7, true));
+		initBooks.add(new ImmutableStockBook(123413,
+				"The Color Yellow", "MC Einer",
+				(float) 7, 56, 0,
+				1, 10, true));
+		initBooks.add(new ImmutableStockBook(123414,
+				"Geometric Shapes and more", "Doc. Geo",
+				(float) 1, 1, 17,
+				12, 8, false));
+		initBooks.add(new ImmutableStockBook(123415,
+				"We Decide What's Red", "MacAfee",
+				(float) 10, 10, 10,
+				10, 10, false));
 
 		stockManager.addBooks(initBooks);
 
