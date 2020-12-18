@@ -2,6 +2,7 @@
 package com.acertainbookstore.client.workloads;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,9 +29,9 @@ public class CertainWorkload {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		int numConcurrentWorkloadThreads = 10;
+		int numConcurrentWorkloadThreads = 90;
 		String serverAddress = "http://localhost:8081";
-		boolean localTest = true;
+		boolean localTest = false;
 		List<WorkerRunResult> workerRunResults = new ArrayList<WorkerRunResult>();
 		List<Future<WorkerRunResult>> runResults = new ArrayList<Future<WorkerRunResult>>();
 
@@ -96,7 +97,8 @@ public class CertainWorkload {
 		double latency = 0;
 		try {
 			String locality = localTest ? "local" : "rpc";
-			FileWriter resultOut = new FileWriter(locality+"_"+workerRunResults.size()+"_clients.txt");
+			FileWriter throOut = new FileWriter("throughput_"+locality+"_"+workerRunResults.size()+"_clients.txt");
+			FileWriter latOut = new FileWriter("latency_"+locality+"_"+workerRunResults.size()+"_clients.txt");
 
 			for (WorkerRunResult result : workerRunResults) {
 				// Check less than 1% interactions are unsuccessful and customer interactions roughly 60% of all interactions
@@ -113,11 +115,13 @@ public class CertainWorkload {
 
 			if (!issueFound) {
 				latency /= workerRunResults.size();
-				resultOut.write("Throughput: "+String.valueOf(throughput)+"\r\nLatency: "+String.valueOf(latency));
+				throOut.write(String.valueOf(throughput)+"\r\n");
+				latOut.write(String.valueOf(latency)+"\r\n");
 				System.out.println("Throughput: " + throughput);
 				System.out.println("Latency: " + latency);
 			}
-			resultOut.close();
+			throOut.close();
+			latOut.close();
 		} catch (IOException e) {
 			System.out.println("An error occurred with writing to txt.");
 			e.printStackTrace();
@@ -134,7 +138,7 @@ public class CertainWorkload {
 			StockManager stockManager) throws BookStoreException {
 
 		Set<StockBook> initBooks = new HashSet<>();
-		initBooks.add(new ImmutableStockBook(123456,
+		initBooks.add(new ImmutableStockBook(123123,
 				"Harry Potter and JUnit", "JK Unit",
 				(float) 7, 10, 0,
 				0, 0, false));
@@ -146,7 +150,7 @@ public class CertainWorkload {
 				"A Guide On How to Use Face Mask", "Pringles",
 				(float) 10, 100, 1,
 				0, 0, true));
-		initBooks.add(new ImmutableStockBook(123457,
+		initBooks.add(new ImmutableStockBook(123451,
 				"The Silver Bottle", "Miss. Princess",
 				(float) 7, 10, 3,
 				8, 3, false));
@@ -154,7 +158,7 @@ public class CertainWorkload {
 				"The Bet of Your Life", "Mr. Green",
 				(float) 1, 79, 0,
 				34, 3, false));
-		initBooks.add(new ImmutableStockBook(123459,
+		initBooks.add(new ImmutableStockBook(123459+1,
 				"A Very Ugly Swam", "HCA",
 				(float) 10, 100, 4,
 				29, 10, true));
