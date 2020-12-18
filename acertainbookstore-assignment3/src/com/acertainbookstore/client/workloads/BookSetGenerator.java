@@ -73,7 +73,7 @@ public class BookSetGenerator {
 					(float) 1, 300, 0,
 					0, 0, false));
 		}
-		return (Set<StockBook>) genBooks.stream();
+		return genBooks.stream().collect(Collectors.toSet());
 	}
 }
 

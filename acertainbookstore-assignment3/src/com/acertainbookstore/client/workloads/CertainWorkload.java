@@ -1,8 +1,7 @@
 
 package com.acertainbookstore.client.workloads;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -96,33 +95,37 @@ public class CertainWorkload {
 		Boolean issueFound = false;
 		float throughput = 0;
 		float latency = 0;
-		PrintWriter throOut = new PrintWriter("../../../../../throFile.txt");
-		PrintWriter lanOut = new PrintWriter("../../../../../lanFile.txt");
+		try {
+			FileWriter throOut = new FileWriter("throughput.txt");
+			FileWriter latOut = new FileWriter("latency.txt");
+				for (WorkerRunResult result : workerRunResults) {
+					// Check less than 1% interactions are unsuccessful and customer interactions roughly 60% of all interactions
+					if (result.getTotalRuns() * 0.99 < result.getSuccessfulInteractions() &&
+							result.getSuccessfulInteractions() * 0.55 < result.getSuccessfulFrequentBookStoreInteractionRuns() &&
+							result.getSuccessfulInteractions() * 0.65 > result.getSuccessfulFrequentBookStoreInteractionRuns()) {
+						issueFound = true;
+					}
+					throughput += result.getSuccessfulFrequentBookStoreInteractionRuns() / result.getElapsedTimeInNanoSecs(); // TODO: I assume this is customer interactions?
+					latency += result.getElapsedTimeInNanoSecs();
+					throOut.write(String.valueOf(throughput)+"\r\n");
+					latOut.write(String.valueOf(latency)+"\r\n");
+					//System.out.println(String.valueOf(throughput)+"\r\n");
+					//System.out.println(String.valueOf(latency)+"\r\n");
 
-		for (WorkerRunResult result: workerRunResults) {
-			// Check less than 1% interactions are unsuccessful and customer interactions roughly 60% of all interactions
-			if (result.getTotalRuns() * 0.99 < result.getSuccessfulInteractions() &&
-				result.getSuccessfulInteractions() * 0.55 < result.getSuccessfulFrequentBookStoreInteractionRuns() &&
-				result.getSuccessfulInteractions() * 0.65 > result.getSuccessfulFrequentBookStoreInteractionRuns()) {
-					issueFound = true;
+				}
+			if (issueFound) {
+				// TODO: What to do here?
+			} else {
+				latency /= workerRunResults.size();
+				latOut.write(String.valueOf(latency)+"\r\n");
 			}
-			throughput += result.getSuccessfulFrequentBookStoreInteractionRuns() / result.getElapsedTimeInNanoSecs(); // TODO: I assume this is customer interactions?
-			latency += result.getElapsedTimeInNanoSecs();
-			throOut.println(throughput);
-			lanOut.println(latency);
 			throOut.close();
-			lanOut.close();
+			latOut.close();
+			System.out.println("Successfully wrote to the files.");
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
 		}
-
-		if (issueFound) {
-			// TODO: What to do here?
-		}
-		else {
-			latency /= workerRunResults.size();
-			lanOut.println(latency);
-			lanOut.close();
-		}
-
 	}
 
 	/**

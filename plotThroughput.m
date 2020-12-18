@@ -2,8 +2,8 @@
 % Plotting throughput data from programming assignment 3 from ACS
 %
 
-x0 = [];
-y0 = [1 2 3 4 5 6 7 8 9 10];
+x0 = [1 2 3 4 5 6 7 8 9 10];
+y0 = [0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0];
 plot(x0,y0);
 title('Throughput Plot - Computer 0');
 xlabel('Number of Clients');
