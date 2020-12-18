@@ -109,7 +109,7 @@ public class Worker implements Callable<WorkerRunResult> {
 		Set<StockBook> randBooks = configuration.getBookSetGenerator().nextSetOfStockBooks(configuration.getNumBooksToAdd());
 
 		// From assignment text: "It then checks if the set of ISBNs is in the list of books fetched" -> therefore convert to set of isbns
-		Set<Integer> randIsbns = listBooks.stream()
+		Set<Integer> randIsbns = randBooks.stream()
 										.map(Book::getISBN)
 										.collect(Collectors.toSet());
 
@@ -157,6 +157,7 @@ public class Worker implements Callable<WorkerRunResult> {
 													.map(Book::getISBN)
 													.collect(Collectors.toSet());
 
+		// Get sample of editor picks
 		Set<Integer> sampleEditorPicks = configuration.getBookSetGenerator().sampleFromSetOfISBNs(editorPickIsbns, configuration.getNumBooksToBuy());
 
 		// Create Set<BookCopy> for buying
